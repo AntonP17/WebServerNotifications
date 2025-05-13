@@ -1,6 +1,8 @@
 package by.antohakon.webservernotifications.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.action.internal.OrphanRemovalAction;
 
 import java.util.List;
 
@@ -25,8 +27,10 @@ public class User {
     @JoinTable(
             name = "user_subscription",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "service_id")
+            inverseJoinColumns = @JoinColumn(name = "service_id"
+            )
     )
+    @JsonIgnore
     private List<WebService> webServices;
 
     public User() {

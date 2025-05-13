@@ -37,7 +37,7 @@ public class WebServicesController {
             );
 
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("Пользователю " + updatedUser.getLogin() + " добавлена подписка");
+                    .body("Пользователю login : " + updatedUser.getLogin() + " добавлена подписка");
 
         } catch (IllegalArgumentException e) {
             // Ловим ошибки из сервиса (не найден пользователь/сервис, дублирование)

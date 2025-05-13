@@ -1,6 +1,9 @@
 package by.antohakon.webservernotifications.repository;
 
 import by.antohakon.webservernotifications.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +18,8 @@ public interface UsersRepository extends JpaRepository<User, Long> {
             nativeQuery = true)
     void deleteSubscription(@Param("userId") Long userId,
                             @Param("serviceId") Long serviceId);
+
+//    @EntityGraph(attributePaths = "webServices")
+//    Page<User> findAll(Pageable pageable);
 
 }
