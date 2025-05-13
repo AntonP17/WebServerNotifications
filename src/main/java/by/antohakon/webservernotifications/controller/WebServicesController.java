@@ -30,25 +30,12 @@ public class WebServicesController {
     @PostMapping
     public ResponseEntity<String> addSubscription(@RequestBody SubscriptionRequest subscriptionRequest){
 
-        try {
-            User updatedUser = webServicesService.addSubscriptionToUser(
+        User updatedUser = webServicesService.addSubscriptionToUser(
                     subscriptionRequest.getUserId(),
-                    subscriptionRequest.getServiceName()
-            );
+                   subscriptionRequest.getServiceName());
 
-            return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Пользователю login : " + updatedUser.getLogin() + " добавлена подписка");
-
-        } catch (IllegalArgumentException e) {
-            // Ловим ошибки из сервиса (не найден пользователь/сервис, дублирование)
-            return ResponseEntity.badRequest()
-                    .body("Ошибка: " + e.getMessage()); // 400 Bad Request
-
-        } catch (Exception e) {
-            // На случай других непредвиденных ошибок
-            return ResponseEntity.internalServerError()
-                    .body("Произошла внутренняя ошибка"); // 500
-        }
 
     }
 
@@ -56,7 +43,8 @@ public class WebServicesController {
     public ResponseEntity<String> deleteSubscription(@RequestBody SubscriptionRequest subscriptionRequest){
 
         webServicesService.removeSubscription(subscriptionRequest.getUserId(), subscriptionRequest.getServiceName());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Подписка успешно удалена");
 
     }
 

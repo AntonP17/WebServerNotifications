@@ -4,6 +4,9 @@ import by.antohakon.webservernotifications.dto.SubscriptionRequest;
 import by.antohakon.webservernotifications.dto.SubscriptionResponse;
 import by.antohakon.webservernotifications.entity.User;
 import by.antohakon.webservernotifications.entity.WebService;
+import by.antohakon.webservernotifications.exceptions.DuplicateSubscriptionException;
+import by.antohakon.webservernotifications.exceptions.ServiceNotFoundException;
+import by.antohakon.webservernotifications.exceptions.UserNotFoundException;
 import by.antohakon.webservernotifications.repository.UsersRepository;
 import by.antohakon.webservernotifications.repository.WebServiceRepository;
 import org.slf4j.Logger;
@@ -12,7 +15,6 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.ServiceNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,21 +40,21 @@ public class WebServicesService {
         User user = usersRepository.findById(userId)
                 .orElseThrow(() -> {
                     LOGGER.error("User with id {} not found", userId);
-                    return new IllegalArgumentException("User not found");
+                    return   new UserNotFoundException("User with id " + userId + " not found");
                 });
 
         // 2. Находим сервис (если не найден — кидаем исключение)
         WebService service = webServiceRepository.findByName(serviceName);
         if (service == null) {
             LOGGER.error("Service with name {} not found", serviceName);
-            throw new IllegalArgumentException("Service not found");
+            throw new ServiceNotFoundException("Service with name " + serviceName + " not found");
         }
 
         // 3. Проверяем дублирование подписки
         if (user.getWebServices().stream()
                 .anyMatch(ws -> ws.getName().equalsIgnoreCase(serviceName))) {
             LOGGER.error("User {} already has subscription to {}", userId, serviceName);
-            throw new IllegalArgumentException("Subscription already exists");
+            throw new DuplicateSubscriptionException("User " + userId + " already has subscription to " + serviceName);
         }
 
         // 4. Добавляем подписку и сохраняем
@@ -70,14 +72,14 @@ public class WebServicesService {
         User user = usersRepository.findById(userId)
                 .orElseThrow(() -> {
                     LOGGER.error("User with id {} not found", userId);
-                    return new IllegalArgumentException("User not found");
+                    return   new UserNotFoundException("User with id " + userId + " not found");
                 });
 
         // 2. Находим сервис (если не найден — кидаем исключение)
         WebService service = webServiceRepository.findByName(serviceName);
         if (service == null) {
             LOGGER.error("Service with name {} not found", serviceName);
-            throw new IllegalArgumentException("Service not found");
+            throw new ServiceNotFoundException("Service with name " + serviceName + " not found");
         }
 
         usersRepository.deleteSubscription(user.getId(), service.getId());
