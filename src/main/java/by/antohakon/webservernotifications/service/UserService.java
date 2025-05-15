@@ -1,10 +1,12 @@
 package by.antohakon.webservernotifications.service;
 
+import by.antohakon.webservernotifications.dto.NewUserDto;
 import by.antohakon.webservernotifications.dto.UserDto;
 import by.antohakon.webservernotifications.dto.UserSubscriptionsDto;
 import by.antohakon.webservernotifications.dto.WebServiceDto;
 import by.antohakon.webservernotifications.entity.User;
 import by.antohakon.webservernotifications.entity.WebService;
+import by.antohakon.webservernotifications.exceptions.DuplicateUserException;
 import by.antohakon.webservernotifications.exceptions.UserNotFoundException;
 import by.antohakon.webservernotifications.repository.UsersRepository;
 import org.slf4j.Logger;
@@ -72,7 +74,7 @@ public class UserService {
         return userDto;
     }
 
-   //@Cacheable(value = "all_users", key = "{#pageable.pageNumber, #pageable.pageSize}")
+  // @Cacheable(value = "all_users", key = "{#pageable.pageNumber, #pageable.pageSize}")
     public Page<UserDto> findAll(Pageable pageable) {
 
         return usersRepository.findAll(pageable)
@@ -83,9 +85,28 @@ public class UserService {
                         user.getLogin()));
     }
 
-    public User createUser(User user) {
+    // ВОПРОС!!!!!!!!!!!!
+    @CachePut(value = "user_cache", key = "#result.id")
+    public UserDto createUser(NewUserDto newUser) {
 
-        return usersRepository.save(user);
+        if (usersRepository.existsByLogin(newUser.login())) {
+            throw new DuplicateUserException("User with login " + newUser.login() + " already exists.");
+        }
+
+        User createdUser = new User(
+                newUser.firstName(),
+                newUser.lastName(),
+                newUser.login());
+
+        usersRepository.save(createdUser);
+
+        UserDto userDto = new UserDto(
+                createdUser.getId(),
+                createdUser.getFirstName(),
+                createdUser.getLastName(),
+                createdUser.getLogin());
+
+        return userDto;
     }
 
     @CacheEvict(value = "user_cache", key = "#userId")
@@ -102,7 +123,7 @@ public class UserService {
     }
 
     @CachePut(value = "user_cache", key = "#userId")
-    public User updateUser(User user, Long userId) {
+    public UserDto updateUser(NewUserDto newUser, Long userId) {
 
         // 1. Находим пользователя (если не найден — кидаем исключение или возвращаем null)
         User findUser = usersRepository.findById(userId)
@@ -112,13 +133,20 @@ public class UserService {
                 });
 
         if (findUser != null) {
-            findUser.setFirstName(user.getFirstName());
-            findUser.setLastName(user.getLastName());
-            findUser.setLogin(user.getLogin());
+            findUser.setFirstName(newUser.firstName());
+            findUser.setLastName(newUser.lastName());
+            findUser.setLogin(newUser.login());
             usersRepository.save(findUser);
         }
 
-        return findUser;
+        UserDto userDto = new UserDto(
+                findUser.getId(),
+                findUser.getFirstName(),
+                findUser.getLastName(),
+                findUser.getLogin()
+        );
+
+        return userDto;
 
     }
 }

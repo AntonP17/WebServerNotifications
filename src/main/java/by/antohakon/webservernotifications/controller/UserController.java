@@ -1,5 +1,6 @@
 package by.antohakon.webservernotifications.controller;
 
+import by.antohakon.webservernotifications.dto.NewUserDto;
 import by.antohakon.webservernotifications.dto.UserDto;
 import by.antohakon.webservernotifications.dto.UserSubscriptionsDto;
 import by.antohakon.webservernotifications.dto.WebServiceDto;
@@ -55,8 +56,8 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public UserDto createUser(@RequestBody NewUserDto newUser) {
+        return userService.createUser(newUser);
     }
 
     @DeleteMapping("/{userId}")
@@ -67,7 +68,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public User updateUser(@PathVariable Long userId, @RequestBody User user) {
-        return userService.updateUser(user,userId);
+    public UserDto updateUser(@PathVariable Long userId, @RequestBody NewUserDto newUser) {
+        return userService.updateUser(newUser,userId);
     }
 }

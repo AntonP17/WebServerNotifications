@@ -42,8 +42,11 @@ public class GlobalExceptionHandler {
     }
 
     // 400 - Ошибка валидации (дубликат подписки)
-    @ExceptionHandler(DuplicateSubscriptionException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateSubscription(DuplicateSubscriptionException ex) {
+    @ExceptionHandler({
+            DuplicateSubscriptionException.class,
+            DuplicateUserException.class
+    })
+    public ResponseEntity<ErrorResponse> handleDuplicateSubscription(RuntimeException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(ex.getMessage(), Instant.now()));

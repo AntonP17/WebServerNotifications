@@ -16,6 +16,8 @@ public interface UsersRepository extends JpaRepository<User, Long> {
     void deleteSubscription(@Param("userId") Long userId,
                             @Param("serviceId") Long serviceId);
 
+    boolean existsByLogin(String login);
+
 //    @EntityGraph(attributePaths = "webServices")
 //    Page<User> findAll(Pageable pageable);
 

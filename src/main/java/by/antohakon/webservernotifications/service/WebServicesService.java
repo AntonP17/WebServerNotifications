@@ -11,6 +11,8 @@ import by.antohakon.webservernotifications.repository.UsersRepository;
 import by.antohakon.webservernotifications.repository.WebServiceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,7 @@ public class WebServicesService {
         return webServiceRepository.findAll();
     }
 
+    @CacheEvict(value = "user_cache_services", key = "#userId")
     public User addSubscriptionToUser(Long userId, String serviceName) {
 
         // 1. Находим пользователя (если не найден — кидаем исключение или возвращаем null)
@@ -66,6 +69,7 @@ public class WebServicesService {
     }
 
     @Transactional
+    @CacheEvict(value = "user_cache_services", key = "#userId")
     public void removeSubscription(Long userId, String serviceName) {
 
         // 1. Находим пользователя (если не найден — кидаем исключение или возвращаем null)
