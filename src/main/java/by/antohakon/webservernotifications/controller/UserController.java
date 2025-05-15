@@ -1,5 +1,8 @@
 package by.antohakon.webservernotifications.controller;
 
+import by.antohakon.webservernotifications.dto.UserDto;
+import by.antohakon.webservernotifications.dto.UserSubscriptionsDto;
+import by.antohakon.webservernotifications.dto.WebServiceDto;
 import by.antohakon.webservernotifications.entity.User;
 import by.antohakon.webservernotifications.entity.WebService;
 import by.antohakon.webservernotifications.repository.UsersRepository;
@@ -29,26 +32,24 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/services")
-    public ResponseEntity<List<WebService>> getUserServices(@PathVariable Long userId) {
+    public ResponseEntity<UserSubscriptionsDto> getUserServices(@PathVariable Long userId) {
 
-        List<WebService> services = userService.findAllSubscriptions(userId);
+        UserSubscriptionsDto services = userService.findAllSubscriptions(userId);
 
         return ResponseEntity.ok(services);
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable Long userId) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long userId) {
 
-        User findUser = userService.getUserbyId(userId);
-        if (findUser == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok().body(userService.getUserbyId(userId));
+        UserDto findUser = userService.getUserbyId(userId);
+
+        return ResponseEntity.ok().body(findUser);
     }
 
     @GetMapping
     @ResponseStatus(value = HttpStatus.OK)
-    public Page<User> getAllUsers(@PageableDefault(size = 10) Pageable pageable) {
+    public Page<UserDto> getAllUsers(@PageableDefault(size = 10) Pageable pageable) {
         return userService.findAll(pageable);
     }
 
