@@ -1,0 +1,29 @@
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: DB-application
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 297032
+    ports:
+      - "5432:5432"
+
+  web-server-notifications :
+      #build: .
+      image: antonp17/web-server-notifications
+      depends_on:
+        - postgres
+      environment:
+            SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/DB-application
+            SPRING_DATASOURCE_USERNAME: postgres
+            SPRING_DATASOURCE_PASSWORD: 297032
+            SPRING_DATA_REDIS_HOST: redis
+            SPRING_DATA_REDIS_PORT: 6379
+      ports:
+        - "8080:8080"
+

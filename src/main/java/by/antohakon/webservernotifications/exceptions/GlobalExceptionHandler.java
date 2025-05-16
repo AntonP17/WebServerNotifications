@@ -1,5 +1,7 @@
 package by.antohakon.webservernotifications.exceptions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,14 +12,23 @@ import java.time.Instant;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
     private static class ErrorResponse {
         private String message;
         private Instant timestamp;
+        private String errorType;
 
     private ErrorResponse(String message, Instant timestamp) {
         this.message = message;
         this.timestamp = timestamp;
     }
+
+    private ErrorResponse(String errorType, String message, Instant timestamp) {
+            this.errorType = errorType;
+            this.message = message;
+            this.timestamp = timestamp;
+        }
 
 
     public String getMessage() {
@@ -26,6 +37,10 @@ public class GlobalExceptionHandler {
 
     public Instant getTimestamp() {
         return timestamp;
+    }
+
+    public String getErrorType() {
+        return errorType;
     }
     }
 
@@ -38,7 +53,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleNotFoundExceptions(RuntimeException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(ex.getMessage(), Instant.now()));
+                .body(new ErrorResponse(
+                        ex.getClass().getSimpleName(),
+                        ex.getMessage(),
+                        Instant.now()));
     }
 
     // 400 - Ошибка валидации (дубликат подписки)
@@ -49,15 +67,25 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleDuplicateSubscription(RuntimeException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(ex.getMessage(), Instant.now()));
+                .body(new ErrorResponse(
+                        ex.getClass().getSimpleName(),
+                        ex.getMessage(),
+                        Instant.now()));
     }
 
     // 500 - Все остальные непредвиденные ошибки
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleOtherExceptions(Exception ex) {
+
+        LOGGER.error("{}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse("Internal server error", Instant.now()));
+                .body(new ErrorResponse(
+                        ex.getClass().getSimpleName(),
+                        ex.getMessage(),
+                        Instant.now()
+                ));
     }
 
 }
