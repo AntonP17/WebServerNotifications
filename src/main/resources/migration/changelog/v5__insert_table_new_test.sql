@@ -1,0 +1,1 @@
+insert into test_schema.test_by_schema_v2 (id,name) values (5,'Kiska3');

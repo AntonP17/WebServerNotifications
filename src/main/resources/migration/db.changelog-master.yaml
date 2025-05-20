@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - include:
+      file: migration/changelog/v1__init_schema.yaml
+  - include:
+      file: migration/changelog/v2__create_table_test.yaml
+  - include:
+      file: migration/changelog/v3__insert_into_table.yaml
+  - include:
+      file: migration/changelog/v4__insrt_table_sqlscript.sql
+  - include:
+      file: migration/changelog/v5__insert_table_new_test.sql
+  - include:
+      file: migration/changelog/v6__sql-sqcript_test.sql
+  - include:
+      file: migration/changelog/v7__insrt_into_user_subscriptions.sql
+  - include:
+      file: migration/changelog/v8__insert_into_services_new_data.sql
+#  - include:
+#      file: migration/changelog/v9__migration_docker.sql

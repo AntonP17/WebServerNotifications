@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id:  create-schema-test
+      author:  antoxakon
+      comment: my first schema
+      changes:
+        - sql:
+           sql: create schema if not exists test_schema
+        - sql:
+           sql: grant all privileges on schema test_schema to postgres

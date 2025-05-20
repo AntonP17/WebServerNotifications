@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: antoxakon
+      comment: add data
+      changes:
+        - insert:
+            schemaName: test_schema
+            tableName: test_by_schema_v2
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: Anton2

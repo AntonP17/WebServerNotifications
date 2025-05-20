@@ -1,0 +1,67 @@
+databaseChangeLog:
+  - changeSet:
+      id:  create-table-pig
+      author:  antoxakon
+      comment: first migration by Antoxa
+      changes:
+        - createTable:
+            tableName:  pig
+            columns:
+              - column:
+                  name:  id
+                  type:  int
+                  autoIncrement:  true
+                  constraints:
+                    primaryKey:  true
+                    nullable:  false
+              - column:
+                  name:  name
+                  type:  varchar(50)
+              - column:
+                  name:  age
+                  type:  int
+              - column:
+                  name:  city
+                  type:  varchar(63)
+
+  - changeSet:
+      id: insert-table-pig
+      author: antoxakon
+      changes:
+        - insert:
+            tableName: pig
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Hrunyas
+              - column:
+                  name: age
+                  value: 12
+              - column:
+                  name: city
+                  value: Novgorods
+
+  - changeSet:
+      id: insert-table-pig-2 # НЕ ЗАБЫВАТЬ КАЖДЫЙ РАЗ УКАЗЫВАТЬ НОВОЕ !!!!
+      author: antoxakon
+      changes:
+        - insert:
+            schemaName: test_schema
+            tableName: pig
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: Hrun
+              - column:
+                  name: age
+                  value: 12
+              - column:
+                  name: city
+                  value: Nov
+
