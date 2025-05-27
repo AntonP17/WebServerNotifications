@@ -11,9 +11,11 @@ databaseChangeLog:
       file: migration/changelog/v5__insert_table_new_test.sql
   - include:
       file: migration/changelog/v6__sql-sqcript_test.sql
+  #- include:
+    #  file: migration/changelog/v7__insrt_into_user_subscriptions.sql
+ # - include:
+  #    file: migration/changelog/v8__insert_into_services_new_data.sql
   - include:
-      file: migration/changelog/v7__insrt_into_user_subscriptions.sql
+      file: migration/changelog/v9__migration_docker.sql
   - include:
-      file: migration/changelog/v8__insert_into_services_new_data.sql
-#  - include:
-#      file: migration/changelog/v9__migration_docker.sql
+      file: migration/changelog/v10__migration_add_new_services.sql

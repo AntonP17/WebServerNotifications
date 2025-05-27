@@ -14,8 +14,8 @@ services:
       - "5432:5432"
 
   web-server-notifications :
-      #build: .
-      image: antonp17/web-server-notifications
+      build: .
+      #image: antonp17/web-server-notifications
       depends_on:
         - postgres
         - redis
